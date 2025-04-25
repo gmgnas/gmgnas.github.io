@@ -1,0 +1,244 @@
+---
+title: "División Zoonosis - APE"
+  
+description: "Analisis Catastro Ecografico Abdominal para la deteccion precoz de la Hidatidosis en niños de 1° a 6° grado en Escuelas de Esquel año 2024"  # Agrega una descripción del documento
+author: "Dr. Carlos Bovenzo (Área Externa HZE), 
+         M.V. Gustavo Martinez (APE),
+         Tec. Hector Fabian Campos (APE),
+         Gonzalo Martín González (APE)"  # Especifica el autor del documento
+date: today  # Inserta la fecha actual automáticamente
+title-block-banner: "#1F60ED"  # Muestra el título como un banner destacado
+lang: es  # Define el idioma del documento como español
+format: 
+  html:
+    embed-resources: true  # Incrusta imágenes y otros recursos en el archivo HTML final
+    published-title: "Fecha:"  # Cambia "Published" por "Fecha"
+    author-title: "Autor:"  # Cambia la etiqueta "Author" por "Autor"
+    toc: true  # Habilita la tabla de contenidos en el documento
+    toc-title: "Índice de Contenidos"  # Establece el título del índice
+    toc-depth: 3  # Define la profundidad del índice (hasta encabezados h3)
+    toc-location: left  # Ubica la tabla de contenidos a la izquierda
+    number-sections: true
+include-in-header: header/header6.html
+css: CSS/style_ppt.css
+#resources:
+ # - "logos/Logo Secretaria 01.png"
+editor: visual  # Activa el editor visual en Quarto
+
+execute:
+  warning: false  # Oculta advertencias generadas por el código
+  message: false  # Oculta mensajes de salida del código
+
+smooth-scroll: true  # Habilita un desplazamiento suave en la página
+code-copy: true  # Agrega un botón para copiar fragmentos de código en el documento
+---
+
+::: justificado
+## Historia
+
+La hidatidosis es una enfermedad endémica en la Patagonia, siendo la Zona Noroeste de la Provincia del Chubut la de mayor número de casos anuales. Esta zona incluye los Departamentos de Cushamen, Futaleufú, Tehuelches y Languiñeo. Los programas de detección temprana, denominados "catastros", comenzaron en la década de 1980 en destacamentos militares, inicialmente dirigidos a personas que realizaban el servicio militar obligatorio, para luego expandirse a escolares. En sus inicios, los catastros utilizaban métodos serológicos.
+
+Con la aparición del ecógrafo en la primera década de este siglo, se comenzaron a implementar ambos métodos de forma aleatoria en las escuelas de la región. A partir del año 2005 se sistematizaron los catastros y, desde 2007, el ecógrafo se convirtió en el único método empleado, debido a su practicidad y a su eficacia para detectar casos hepáticos, que representan entre el 70% y 80% de los casos de hidatidosis. Los métodos serológicos, en comparación, implicaban molestias innecesarias para los niños, y en muchos casos presentaban falsos positivos.
+
+Actualmente, los Departamentos de Futaleufú, Tehuelches y Languiñeo se dividen en tres zonas: Norte, Sur y Esquel. Las ecografías se realizan de manera rotativa, un año en cada zona, garantizando que cada escuela sea cubierta cada tres años. De este modo, se asegura que los niños reciban al menos dos ecografías durante su ciclo escolar primario. En localidades o comunas con baja matrícula escolar, se realiza ecografía a todos los estudiantes, tanto de nivel primario como secundario.
+:::
+
+::: justificado
+## Introducción
+
+En el marco de las estrategias de control de zoonosis en la región, el Departamento de Zoonosis en conjunto con el Area Externa del HZE por medio de uno de sus médicos generalista y ecografista de nuestra localidad, llevó a cabo durante el año 2024 un screening de hidatidosis en niños y niñas de 6 a 11 años de las 15 escuelas primarias de Esquel, como parte de una acción preventiva dentro del primer nivel de atención. Esta actividad fue realizada mediante ecografías abdominales, con el objetivo de detectar de manera temprana posibles casos de hidatidosis, una enfermedad zoonótica que puede afectar gravemente a la salud humana. Además, durante la misma jornada, se identificaron otros hallazgos relevantes, como casos de esteatosis hepática, los cuales están relacionados con la creciente prevalencia de obesidad infantil y el síndrome metabólico.
+
+:::
+
+::: justificado
+## Justificación del Screening de Hidatidosis
+
+La hidatidosis es una enfermedad parasitaria causada por el Echinococcus granulosus, que afecta principalmente al hígado y los pulmones. La transmisión se realiza a través del contacto con perros infectados que eliminan los huevos del parásito en sus heces. En nuestra región, debido a la convivencia de perros y ganado, y el contacto frecuente de los niños con estos animales, la población infantil se encuentra expuesta a un mayor riesgo.
+
+El screening realizado consistió en la realización de ecografías abdominales a 2635 niños y niñas, lo que representa un 78,54% de la matrícula escolar, alcanzando una cobertura significativa en las 15 escuelas primarias de Esquel. Se lograron detectar 4 casos confirmados de hidatidosis, los cuales fueron validados mediante serología. Este hallazgo, si bien es reducido en comparación con el total de niños examinados, es preocupante dado que refleja la presencia de esta zoonosis en nuestra comunidad y subraya la necesidad de mantener acciones preventivas y de sensibilización. 
+
+:::
+
+```{r load_data, echo=FALSE}
+library(readxl)
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(leaflet)
+
+Catastro <- read_excel("Catastro.xlsx")
+```
+
+```{r, echo=FALSE}
+Catastro$FECHA_NAC <- as.Date(Catastro$FECHA_NAC) # Convertir tipo de dato
+
+# Tercer paso Calcular edad
+# Asegurarse de que la columna de fecha de nacimiento esté en formato de fecha
+Catastro$FECHA_NAC <- as.Date(Catastro$FECHA_NAC, format="%Y-%m-%d")  # Ajustar el formato según sea necesario
+
+# Calcular la edad - Se crea la columna EDAD
+Catastro <- Catastro %>%
+  mutate(EDAD = as.numeric(format(Sys.Date(), "%Y")) - as.numeric(format(FECHA_NAC, "%Y")))
+```
+
+```{r, echo=FALSE}
+data_selected <- Catastro %>%
+  select(ID, EDAD, SEXO, GRADO, RESULTADO, ESCUELA)
+```
+
+```{r, echo=FALSE}
+# Calcular las frecuencias de la columna RESULTADO
+frecuencia_resultados <- data_selected %>%
+  count(RESULTADO) %>%
+  rename(Frecuencia = n)  # Renombrar la columna de conteo a "Frecuencia"
+
+# Definir el orden deseado
+orden_resultados <- c("NEGATIVO", "POSITIVO", "AUSENTE", "NO AUTORIZADO", "NO QUISO")
+
+# Convertir la columna RESULTADO en un factor con el orden especificado
+frecuencia_resultados$RESULTADO <- factor(frecuencia_resultados$RESULTADO, levels = orden_resultados)
+```
+
+```{r grafico_frecuencia_resultados, echo=FALSE}
+library(ggplot2)
+
+
+
+ggplot(frecuencia_resultados, aes(x = RESULTADO, y = Frecuencia)) +
+  geom_bar(stat = "identity", fill = "grey", color = "black", width = 1) +
+  labs(title = "Resultados por Total Matrucula - n = 3.355",
+       x = "Resultado",
+       y = "Frecuencia") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        plot.title = element_text(hjust = 0.5)) + # Centrar el título aquí
+  scale_y_continuous(limits = c(0, max(frecuencia_resultados$Frecuencia) * 1.15),
+                     breaks = seq(0, max(frecuencia_resultados$Frecuencia) * 1.15, by = 500)) +
+  geom_text(aes(label = Frecuencia), vjust = -0.4, family = "serif", fontface = "bold")
+```
+
+```{r, echo=FALSE}
+   library(dplyr)
+   library(tidyr)
+   
+   tabla_resultados_escuelas <- data_selected %>%
+     group_by(ESCUELA, RESULTADO) %>%
+     summarise(Frecuencia = n(), .groups = "drop") %>%
+     pivot_wider(names_from = RESULTADO, values_from = Frecuencia, values_fill = 0)
+  
+```
+
+```{r grafico_resultados_escuelas, echo=FALSE}
+   grafico_resultados_escuelas <- plot_ly(tabla_resultados_escuelas,
+                                          y = ~ESCUELA,
+                                          x = ~NEGATIVO,
+                                          type = "bar",
+                                          name = "NEGATIVO",
+                                          orientation = "h",
+                                          marker = list(color = "green")) %>% # Cambiar color a rojo
+     add_trace(x = ~POSITIVO, name = "POSITIVO", marker = list(color = "red")) %>% # Cambiar color a verde
+     add_trace(x = ~AUSENTE, name = "AUSENTE", marker = list(color = "blue")) %>% # Cambiar color a azul
+     add_trace(x = ~`NO AUTORIZADO`, name = "NO AUTORIZADO", marker = list(color = "yellow")) %>% # Cambiar color a naranja
+     add_trace(x = ~`NO QUISO`, name = "NO QUISO", marker = list(color = "purple")) %>% # Cambiar color a morado
+     layout(title = "Resultados por Escuela - n = 3.355",
+            xaxis = list(title = "Frecuencia"),
+            yaxis = list(title = "Escuela", tickfont = list(size = 10)),
+            barmode = "stack",
+            legend = list(orientation = "h", yanchor = "bottom", y = -0.3, xanchor = "center", x = 0.5))
+               
+   grafico_resultados_escuelas
+```
+
+```{r, echo=FALSE}
+   escuelas_geo <- read_excel("data/escuelas_geo.xlsx")
+   
+   escuelas_geo <- cbind(escuelas_geo, tabla_resultados_escuelas)
+```
+
+```{r Georeferenciacion_Escuelas, echo=FALSE}
+     leaflet(escuelas_geo) %>%
+      addTiles() %>%
+      addMarkers(
+        ~Longitud, ~Latitud,
+        popup = paste(
+          "ESCUELA: ", escuelas_geo$ESCUELA, "<br>",
+          "NEGATIVO: ", escuelas_geo$NEGATIVO, "<br>",
+          "POSITIVO: ", escuelas_geo$POSITIVO, "<br>",
+          "AUSENTE: ", escuelas_geo$AUSENTE, "<br>",
+          "NO AUTORIZADO: ", escuelas_geo$`NO AUTORIZADO`, "<br>",
+          "NO QUISO: ", escuelas_geo$`NO QUISO`, "<br>"
+        )
+      ) %>%
+      addControl(
+        html = "<h3>Mapa de Escuelas</h3>", 
+        position = "bottomright" # You can change the position (e.g., 'topleft', 'bottomleft', etc.)
+      )
+```
+
+
+::: justificado
+## Hallazgos Relevantes en el Screening
+
+Además de los 4 casos confirmados de hidatidosis, que representan un diagnóstico importante para la salud pública, se registraron otros hallazgos relevantes que merecen ser destacados:
+
+1.  41 casos de Esteatosis Hepática (Hígado Graso No Alcohólico): Este hallazgo es alarmante dado que la esteatosis hepática está estrechamente relacionada con el sobrepeso y la obesidad infantil, condiciones que están en aumento en nuestra región y en todo el país. La esteatosis hepática no alcohólica puede evolucionar hacia formas más graves de enfermedad hepática, incluida la cirrosis y el riesgo de carcinoma hepatocelular.
+
+2.  Otros hallazgos:
+
+```         
+    -   4 casos de bazo accesorio.
+    -   2 casos de hidronefrosis.
+    -   9 casos de quistes renales simples no hidatídicos.
+    -   3 casos de litiasis vesicular.
+    -   1 caso de nefromegalia.
+    -   2 casos de agenesia renal unilateral.
+    -   1 caso de localización renal ectópica.
+```
+:::
+
+::: justificado
+## Impacto de la Obesidad Infantil y el Síndrome Metabólico
+
+La relación entre la obesidad infantil, la esteatosis hepática y el síndrome metabólico es un tema de creciente preocupación. En Argentina, según datos del Ministerio de Salud, el 41,1% de los niños y adolescentes entre 5 y 17 años presenta exceso de peso, con una prevalencia de sobrepeso del 20,7% y obesidad del 20,4%. Este fenómeno tiene repercusiones directas sobre la salud hepática y metabólica de los niños. 
+La esteatosis hepática, que afecta a un número significativo de niños en nuestra comunidad, puede ser un indicio temprano de que estos pequeños están en riesgo de desarrollar enfermedades metabólicas más graves en la vida adulta, como la diabetes tipo
+2, hipertensión y enfermedades cardiovasculares. Estas condiciones no solo afectan la calidad de vida de los individuos, sino que también representan una carga económica sustancial para el sistema de salud, como se evidenció en el costo de tratamiento de la
+diabetes en países como Estados Unidos, que alcanzan cifras multimillonarias.
+:::
+
+::: justificado
+## Medidas Preventivas para Combatir la Hidatidosis
+
+Para prevenir la hidatidosis, es fundamental seguir ciertas recomendaciones:
+
+1.  Desparasitar a los perros regularmente: Es esencial que los dueños de mascotas consulten a un veterinario para conocer los protocolos de desparasitación de los perros. Esto evitará la transmisión de los huevos del parásito a través de las heces de los animales.
+
+2.  Higiene y hábitos de cuidado: Lavar bien las manos después de tocar a los perros o cualquier animal doméstico, así como lavar adecuadamente frutas y verduras antes de consumirlas, son prácticas clave para prevenir el contagio.
+
+3.  Control en zonas de riesgo: Las zonas rurales o suburbanas, donde existen vínculos estrechos entre animales, como perros y ganado, son áreas de mayor riesgo. En estas regiones, es fundamental reforzar las medidas de prevención.
+
+4.  Educación y concientización: Es necesario continuar con los programas educativos en las escuelas, como el realizado este año, para sensibilizar a las familias sobre los riesgos de la hidatidosis y las medidas preventivas que deben adoptar.
+:::
+
+::: justificado
+## Medidas Preventivas para Combatir la Obesidad Infantil y el Síndrome Metabólico
+
+En relación con la obesidad infantil y sus complicaciones, existen intervenciones clave que pueden marcar una diferencia en la prevención de enfermedades metabólicas futuras:
+
+1.  Promoción de una dieta saludable: Fomentar una alimentación equilibrada, rica en frutas, verduras y baja en azúcares y grasas saturadas, es esencial para prevenir la obesidad y sus complicaciones hepáticas.
+
+2.  Fomento de la actividad física: Es necesario promover el ejercicio físico regular entre los niños, buscando que al menos el 60% de su tiempo diario esté destinado a actividades que impliquen esfuerzo físico. Esta es una de las mejores maneras de prevenir no solo la obesidad, sino también el síndrome metabólico y las enfermedades cardiovasculares.
+
+3.  Educación familiar: Es fundamental involucrar a las familias en la adopción de hábitos saludables, tanto en la alimentación como en la actividad física, para lograr cambios sostenibles en la salud de los niños y adolescentes.
+:::
+
+::: justificado
+## Conclusiones
+
+El screening realizado en las escuelas primarias de Esquel ha permitido detectar casos importantes de hidatidosis, lo que resalta la necesidad de continuar con las campañas de prevención y control de zoonosis. Además, los hallazgos de esteatosis hepática reflejan la creciente prevalencia de la obesidad infantil en nuestra región, lo que pone en evidencia
+la urgencia de implementar medidas preventivas para evitar el síndrome metabólico y sus consecuencias a largo plazo.
+
+Para enfrentar estos desafíos, es fundamental continuar con la promoción de hábitos saludables desde temprana edad y fortalecer las políticas públicas de salud, que incluyan tanto la prevención de enfermedades zoonóticas como la lucha contra la obesidad infantil y sus complicaciones. De esta manera, podremos reducir la carga de enfermedades crónicas en la población y mejorar la calidad de vida de los niños y adolescentes de
+nuestra comunidad.
+:::

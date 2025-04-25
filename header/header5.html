@@ -1,0 +1,58 @@
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+  .custom-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #3e26b4;
+    color: #e88f58;
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-family: 'Manrope', sans-serif;
+  }
+  .header-text {
+    text-align: center; /* Centra el texto */
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+    flex-grow: 1; /* Permite que el texto se expanda para ocupar el centro */
+  }
+  .header-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: #f4c242;
+    margin-top: 5px;
+  }
+  .text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1; /* Permite que el contenedor de texto se expanda */
+  }
+  .custom-header img {
+    width: 100px;
+    height: auto;
+  }
+  .logo-container {
+    display: flex; /* Añade un contenedor para los logos */
+  }
+</style>
+
+<div class="custom-header">
+  <div class="logo-container"> 
+    <img src="Logos/Chubut.png" alt="Chubut">
+  </div>
+  <div class="text-container">
+    <div class="header-text">División Zoonosis</div>
+    <div class="header-subtitle">Análisis y Control de Enfermedades Transmitidas por Animales</div>
+  </div>
+  <div class="logo-container"> 
+    <img src="Logos/Logo Secretaria.png" alt="Logo Secretaria">
+  </div>
+</div>

@@ -1,0 +1,75 @@
+/* Importa la fuente 'Poppins' desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+/* Aplica la fuente Poppins a todo el documento */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #333333; /* Color de texto principal (gris oscuro) */
+    background-color: #F4F4F9; /* Fondo gris claro */
+}
+
+/* Estilos de encabezados */
+h1, h2, h3, h4, h5, h6 {
+    color: #D84A5B; /* Rojo suave para encabezados */
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+/* Estilo para enlaces */
+a {
+    color: #4C6B8C; /* Gris azulado para enlaces */
+    text-decoration: none;
+}
+a:hover {
+    color: #D84A5B; /* Rojo más vibrante al pasar el mouse */
+    text-decoration: underline;
+}
+
+/* Modificación de tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff; /* Fondo blanco para tablas */
+}
+th {
+    background-color: #D84A5B; /* Rojo suave para encabezados */
+    color: #ffffff; /* Blanco para texto en encabezados */
+    padding: 12px;
+}
+td {
+    padding: 10px;
+    border: 1px solid #D84A5B; /* Borde rojo */
+}
+
+/* Botones personalizados */
+button, .btn {
+    background-color: #4C6B8C; /* Gris azulado para botones */
+    color: #ffffff; /* Blanco para texto */
+    border: none;
+    padding: 12px 24px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 4px;
+}
+button:hover, .btn:hover {
+    background-color: #D84A5B; /* Rojo suave al pasar el mouse */
+}
+
+/* Bloques de código */
+pre, code {
+    background-color: #333333; /* Gris oscuro para el fondo */
+    color: #ffffff; /* Blanco para el texto */
+    padding: 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', Courier, monospace; /* Tipografía monoespaciada */
+}
+
+/* Estilos de cuadros (blockquotes) */
+blockquote {
+    border-left: 5px solid #D84A5B; /* Rojo suave para el borde */
+    background-color: #F1E5E5; /* Fondo suave rosado */
+    color: #4C6B8C; /* Gris azulado para el texto */
+    padding: 15px 30px;
+    font-style: italic;
+    font-size: 1.1em;
+}
